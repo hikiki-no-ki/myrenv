@@ -1,0 +1,1 @@
+ usage: myrenv [-init] [-set envname] [-get] [-lib] [-pkg] [-dug] [-mklib envname] [-rmlib envname] [-show]
