@@ -1,13 +1,15 @@
 # myrenv
 
-< OVERVIEW >
+## OVERVIEW
   This project is the tool for management of R library.
   In this tool, R libraries are divided to each project and managed under home directory.
   This tool enables to make the change to another library easy.
 
-< USAGE >
+## USAGE
   (preparation: alias to myrenv)
-  myrenv [-init] [-set envname] [-get] [-env] [-pkg] [-dug] [-mkenv envname] [-rmenv envname] [-show]
+  ```sh
+  % myrenv [-init] [-set envname] [-get] [-env] [-pkg] [-dug] [-mkenv envname] [-rmenv envname] [-show]
+  ```
 
   -init : make ~/RProjectLibraries directory to initialize myrenv.
   -set : set new library to ~/.Rprofile instead of old.
