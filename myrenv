@@ -18,11 +18,10 @@ GREP_OPTIONS=''
 # Function
 exist () {
     if [ ! -e $* ]; then
-        \echo "$* not exist."
+        \echo -e "\e[31;1m $* not exist."
         exit
     fi
 }
-
 
 # Read arguments
 exist ${RPROFILE}
@@ -53,14 +52,14 @@ for i in `\seq $#`; do
             NEWLIBPATH=${ROOTPATH}/${NEWLIBNAME}/library
             NEWCOMMAND=".libPaths(new=\"${NEWLIBPATH}\")"
             
-            \echo old path: ${OLDLIBPATH}
-            \echo new path: ${NEWLIBPATH}
+            \echo "old path: ${OLDLIBPATH}"
+            \echo "new path: ${NEWLIBPATH}"
 
             OLDRPROFILE=${RPROFILE}.bak
             \mv ${RPROFILE} ${OLDRPROFILE}
             \sed s*${OLDCOMMAND}*${NEWCOMMAND}*g ${OLDRPROFILE} > ${RPROFILE}
         else
-            \cat ${USAGE}
+            \echo -e "\e[31;1m" `cat ${USAGE}`
             exit
         fi
 
