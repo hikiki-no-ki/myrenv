@@ -4,7 +4,7 @@
 # Date: 2020/01/15
 # Author: Yusuke Hiki
 # -------------------------------------- #
-SCRIPTPATH=$(\cd $(\dirname $0); \pwd)
+SCRIPTPATH=$(cd $(dirname $0); pwd)
 
 # VARIABLE
 LIB=""
@@ -18,108 +18,108 @@ GREP_OPTIONS=''
 # Function
 exist () {
     if [ ! -e $* ]; then
-        \echo -e "\e[31;1m $* not exist."
+        echo -e "\e[31;1m $* not exist."
         exit
     fi
 }
 
 # Read arguments
 exist ${RPROFILE}
-for i in `\seq $#`; do
+for i in `seq $#`; do
     if [ ${@:$i:1} = "-init" ]; then
         ROOTPATH=~/RProjectLibraries
         if [ ! -e ${ROOTPATH} ]; then
-            \mkdir ${ROOTPATH}
-            \echo "${ROOTPATH} created."
-            \mkdir ${ROOTPATH}/.myrenv_init
-            \mkdir ${ROOTPATH}/.myrenv_init/library
-            \echo "${ROOTPATH}/.myrenv_init ${ROOTPATH}/.myrenv_init/library created."
+            mkdir ${ROOTPATH}
+            echo "${ROOTPATH} created."
+            mkdir ${ROOTPATH}/.myrenv_init
+            mkdir ${ROOTPATH}/.myrenv_init/library
+            echo "${ROOTPATH}/.myrenv_init ${ROOTPATH}/.myrenv_init/library created."
         else
-            \echo "myrenv already initiated. HAVE FUN !!"
+            echo "myrenv already initiated. HAVE FUN !!"
         fi
 
     # -set option: set new library
     elif [ ${@:$i:1} = "-set" ]; then
-        if [ `\echo ${@:$i+1:1} | \cut -c 1-1` != "-" ]; then
+        if [ `echo ${@:$i+1:1} | cut -c 1-1` != "-" ]; then
             NEWLIBNAME=${@:$i+1:1}
             
-            OLDCOMMAND=`\cat ${RPROFILE} | grep "\.libPaths"` 
-            OLDLIBPATH=`\echo ${OLDCOMMAND} | \awk 'BEGIN{FS="\""}{print $2}'`
+            OLDCOMMAND=`cat ${RPROFILE} | grep "\.libPaths"` 
+            OLDLIBPATH=`echo ${OLDCOMMAND} | awk 'BEGIN{FS="\""}{print $2}'`
             
-            \cd ${OLDLIBPATH}/../..; ROOTPATH=`\pwd`
+            cd ${OLDLIBPATH}/../..; ROOTPATH=`pwd`
             exist ${ROOTPATH}/${NEWLIBNAME}
             
             NEWLIBPATH=${ROOTPATH}/${NEWLIBNAME}/library
             NEWCOMMAND=".libPaths(new=\"${NEWLIBPATH}\")"
             
-            \echo "old path: ${OLDLIBPATH}"
-            \echo "new path: ${NEWLIBPATH}"
+            echo "old path: ${OLDLIBPATH}"
+            echo "new path: ${NEWLIBPATH}"
 
             OLDRPROFILE=${RPROFILE}.bak
-            \mv ${RPROFILE} ${OLDRPROFILE}
-            \sed s*${OLDCOMMAND}*${NEWCOMMAND}*g ${OLDRPROFILE} > ${RPROFILE}
+            mv ${RPROFILE} ${OLDRPROFILE}
+            sed s*${OLDCOMMAND}*${NEWCOMMAND}*g ${OLDRPROFILE} > ${RPROFILE}
         else
-            \echo -e "\e[31;1m" `cat ${USAGE}`
+            echo -e "\e[31;1m" `cat ${USAGE}`
             exit
         fi
 
     # -get option: get current library
     elif [ ${@:$i:1} = "-get" ]; then
-        COMMAND=`\cat ${RPROFILE} | grep ".libPaths"`
-        CURLIB=`\echo ${COMMAND} | \awk 'BEGIN{FS="\""}{print $2}'`
-        \echo "Current library :"
-        \echo ${CURLIB}
+        COMMAND=`cat ${RPROFILE} | grep ".libPaths"`
+        CURLIB=`echo ${COMMAND} | awk 'BEGIN{FS="\""}{print $2}'`
+        echo "Current library :"
+        echo ${CURLIB}
 
     # -lib option: show environment list
     elif [ ${@:$i:1} = "-lib" ]; then
-        LIBPATH=`grep ".libPaths" ${RPROFILE} | \awk 'BEGIN{FS="\""}{print $2}'`
-        \cd ${LIBPATH}/../../; ROOTPATH=`\pwd`
-        \echo ${ROOTPATH} :
-        \ls -1 ${ROOTPATH}
+        LIBPATH=`grep ".libPaths" ${RPROFILE} | awk 'BEGIN{FS="\""}{print $2}'`
+        cd ${LIBPATH}/../../; ROOTPATH=`pwd`
+        echo ${ROOTPATH} :
+        ls -1 ${ROOTPATH}
 
     # -pkg option: show package list in current library
     elif [ ${@:$i:1} = "-pkg" ]; then
-        LIBPATH=`grep ".libPaths" ${RPROFILE} | \awk 'BEGIN{FS="\""}{print $2}'`
-        \echo ${LIBPATH} :
-        \ls -1 ${LIBPATH}
+        LIBPATH=`grep ".libPaths" ${RPROFILE} | awk 'BEGIN{FS="\""}{print $2}'`
+        echo ${LIBPATH} :
+        ls -1 ${LIBPATH}
 
     # -dug option: show size of all packages in current library
     elif [ ${@:$i:1} = "-dug" ]; then
-        LIBPATH=`grep ".libPaths" ${RPROFILE} | \awk 'BEGIN{FS="\""}{print $2}'`
-        \du -sh ${LIBPATH}
+        LIBPATH=`grep ".libPaths" ${RPROFILE} | awk 'BEGIN{FS="\""}{print $2}'`
+        du -sh ${LIBPATH}
 
     # -mklib option: make new environment
     elif [ ${@:$i:1} = "-mklib" ]; then
         LIBNAME=${@:$i+1:1}
-        LIBPATH=`grep ".libPaths" ${RPROFILE} | \awk 'BEGIN{FS="\""}{print $2}'`
-        \cd ${LIBPATH}/../..; ROOTPATH=`\pwd`
+        LIBPATH=`grep ".libPaths" ${RPROFILE} | awk 'BEGIN{FS="\""}{print $2}'`
+        cd ${LIBPATH}/../..; ROOTPATH=`pwd`
         NEWLIBPATH=${ROOTPATH}/${LIBNAME}
         
         if [ ! -e ${NEWLIBPATH} ]; then
-            \mkdir ${NEWLIBPATH}
-            \mkdir ${NEWLIBPATH}/library
-            \echo "new library: ${NEWLIBPATH} created."
+            mkdir ${NEWLIBPATH}
+            mkdir ${NEWLIBPATH}/library
+            echo "new library: ${NEWLIBPATH} created."
         else
-            \echo "${NEWLIBPATH} already exist."
+            echo "${NEWLIBPATH} already exist."
         fi
 
     # -rmlib option: remove environment
     elif [ ${@:$i:1} = "-rmlib" ]; then
         LIBNAME=${@:$i+1:1}
-        LIBPATH=`grep ".libPaths" ${RPROFILE} | \awk 'BEGIN{FS="\""}{print $2}'`
-        \cd ${LIBPATH}/../..; ROOTPATH=`\pwd`
+        LIBPATH=`grep ".libPaths" ${RPROFILE} | awk 'BEGIN{FS="\""}{print $2}'`
+        cd ${LIBPATH}/../..; ROOTPATH=`pwd`
         RMLIBPATH=${ROOTPATH}/${LIBNAME}
         exist ${RMLIBPATH}
-        \rm -r -I ${RMLIBPATH}
-        \echo " ${RMLIBPATH} removed. "
+        rm -r -I ${RMLIBPATH}
+        echo " ${RMLIBPATH} removed. "
 
     # -show option: show Rprofile file
     elif [ ${@:$i:1} = "-show" ]; then
-        \less ${RPROFILE}
+        less ${RPROFILE}
 
      # -h option: show help document
     elif [ ${@:$i:1} = "-h" ]; then
-        \less ${HELP}
+        less ${HELP}
     fi
 done
 
